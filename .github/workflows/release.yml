@@ -1,0 +1,53 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  build-release:
+    name: Build and publish
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Resolve version
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          echo "VERSION=$VERSION" >> "$GITHUB_ENV"
+          echo "BUILD=${VERSION//./}" >> "$GITHUB_ENV"
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Generate project and stamp version
+        working-directory: macos
+        run: |
+          xcodegen generate
+          /usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString $VERSION" MirAIeBar/Info.plist
+          /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $BUILD" MirAIeBar/Info.plist
+
+      - name: Build app
+        working-directory: macos
+        run: xcodebuild -project MirAIeBar.xcodeproj -scheme MirAIeBar -configuration Release build
+
+      - name: Package app
+        run: |
+          APP_PATH=$(find "$HOME/Library/Developer/Xcode/DerivedData" -name "MirAIeBar.app" -path "*Release*" -maxdepth 6 | head -1)
+          test -n "$APP_PATH"
+          mkdir -p dist
+          ditto "$APP_PATH" "dist/MirAIeBar.app"
+          ditto -c -k --sequesterRsrc --keepParent "dist/MirAIeBar.app" "MirAIeBar-${VERSION}-macos-arm64.zip"
+
+      - name: Publish release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" \
+            "MirAIeBar-${VERSION}-macos-arm64.zip" \
+            --title "MirAIeBar ${VERSION}" \
+            --generate-notes

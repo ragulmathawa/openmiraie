@@ -1,0 +1,30 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  kit-tests:
+    name: MirAIeKit tests
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run Swift package tests
+        working-directory: macos/MirAIeKit
+        run: swift test
+
+  app-build:
+    name: App build
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install XcodeGen
+        run: brew install xcodegen
+      - name: Generate Xcode project
+        working-directory: macos
+        run: xcodegen generate
+      - name: Build app
+        working-directory: macos
+        run: xcodebuild -project MirAIeBar.xcodeproj -scheme MirAIeBar -configuration Release build CODE_SIGNING_ALLOWED=NO

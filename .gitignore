@@ -1,0 +1,28 @@
+.DS_Store
+*.log
+
+# Proprietary artifact used for analysis; never committed
+MirAIe.apk
+
+# Extracted/decompiled work products
+re-work/
+jadx-out/
+
+# Node CLI
+node_modules/
+
+# SwiftPM
+macos/MirAIeKit/.build/
+macos/MirAIeKit/.swiftpm/
+
+# Xcode / XcodeGen generated
+macos/MirAIeBar.xcodeproj/
+macos/MirAIeBar/Info.plist
+macos/build/
+DerivedData/
+xcuserdata/
+*.xcworkspace/xcuserdata/
+
+# Local credentials (should never exist in the repo)
+credentials.json
+*.rea.backup

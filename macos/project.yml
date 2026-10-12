@@ -1,0 +1,39 @@
+name: MirAIeBar
+options:
+  bundleIdPrefix: dev.openmiraie
+  deploymentTarget:
+    macOS: "14.0"
+  createIntermediateGroups: true
+packages:
+  MirAIeKit:
+    path: MirAIeKit
+targets:
+  MirAIeBar:
+    type: application
+    platform: macOS
+    sources:
+      - path: MirAIeBar
+    dependencies:
+      - package: MirAIeKit
+        product: MirAIeKit
+    info:
+      path: MirAIeBar/Info.plist
+      properties:
+        CFBundleName: MirAIe Bar
+        CFBundleDisplayName: MirAIe Bar
+        CFBundleShortVersionString: "0.1.0"
+        CFBundleVersion: "1"
+        LSUIElement: true
+        LSMinimumSystemVersion: "14.0"
+        NSPrincipalClass: NSApplication
+        NSHumanReadableCopyright: ""
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: dev.openmiraie.bar
+        MACOSX_DEPLOYMENT_TARGET: "14.0"
+        SWIFT_VERSION: "5.9"
+        CODE_SIGN_IDENTITY: "-"
+        CODE_SIGN_STYLE: Manual
+        DEVELOPMENT_TEAM: ""
+        ENABLE_HARDENED_RUNTIME: NO
+        GENERATE_INFOPLIST_FILE: NO
